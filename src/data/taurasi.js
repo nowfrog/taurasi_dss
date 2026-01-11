@@ -359,7 +359,7 @@ export const INTERVENTIONS = [
     name: "Rainwater Harvesting",
     shortName: "P2",
     description: "Sistema di raccolta e riutilizzo delle acque piovane",
-    mainImpact: "-60% water input/supply",
+    mainImpact: "-60% water indicators",
     publicSharePercentage: 80,
     coefficients: {
       cost: 643,         // €/abitante
@@ -371,8 +371,8 @@ export const INTERVENTIONS = [
     driver: "population",
     impacts: [
       { indicator: 4, type: "multiply", value: 0.4 },  // Water input
-      { indicator: 5, type: "multiply", value: 0.4 }   // Supplied water
-      // Water leaks (indicator 6) is auto-calculated from input/supply ratio
+      { indicator: 5, type: "multiply", value: 0.4 },  // Supplied water
+      { indicator: 6, type: "multiply", value: 0.4 }   // Water leaks
     ]
   },
   {

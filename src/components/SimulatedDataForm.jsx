@@ -17,9 +17,8 @@ function calculateZScore(value, mean, std, polarity, min = null, max = null) {
 }
 
 function normalizeMinMax(rawValue, L, U) {
-  let norm = ((rawValue - L) / (U - L)) * 100;
-  if (norm < 0) norm = 0;
-  if (norm > 100) norm = 100;
+  // Normalizzazione senza cap a 0-100
+  const norm = ((rawValue - L) / (U - L)) * 100;
   return norm;
 }
 

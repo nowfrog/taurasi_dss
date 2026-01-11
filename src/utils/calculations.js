@@ -12,9 +12,9 @@ import {
 // NORMALIZZAZIONE MIN-MAX (0-100)
 // ============================================
 export function normalizeMinMax(rawValue, L, U) {
-  let norm = ((rawValue - L) / (U - L)) * 100;
-  if (norm < 0) norm = 0;
-  if (norm > 100) norm = 100;
+  // Normalizzazione senza cap a 0-100
+  // I valori possono superare 100 se il valore simulato supera i bounds storici
+  const norm = ((rawValue - L) / (U - L)) * 100;
   return norm;
 }
 
@@ -217,14 +217,6 @@ export function runSimulation(activeInterventions, interventions) {
     const totalFirms = MUNICIPALITY_DATA.totalFirms + newFirms;
     const agriFirms = MUNICIPALITY_DATA.agriFirmsWithUAA + newFirms;
     simulatedIndicators[0].simulatedValue = (agriFirms / totalFirms) * 100;
-  }
-
-  // Auto-calcola Water Leaks (indicatore 6) da Water Input (4) e Water Supply (5)
-  // Water Leaks = 1 - (waterSupply / waterInput)
-  const waterInput = simulatedIndicators[3].simulatedValue;  // index 3 = indicator 4
-  const waterSupply = simulatedIndicators[4].simulatedValue; // index 4 = indicator 5
-  if (waterInput > 0) {
-    simulatedIndicators[5].simulatedValue = 1 - (waterSupply / waterInput); // index 5 = indicator 6
   }
 
   // Ricalcola z-scores per indicatori modificati
