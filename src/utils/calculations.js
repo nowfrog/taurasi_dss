@@ -220,16 +220,16 @@ export function runSimulation(activeInterventions, interventions) {
   }
 
   // Ricalcola z-scores per indicatori modificati
-  // Usa clamping ai bounds storici (min/max) per evitare z-scores estremi
+  // NON usa clamping per le simulazioni degli interventi predefiniti
+  // (il clamping è usato solo nel form di input manuale per valori estremi)
   const simulatedZScores = simulatedIndicators.map((ind) => {
     if (ind.simulatedValue !== ind.value) {
       return calculateZScore(
         ind.simulatedValue,
         ind.mean,
         ind.std,
-        POLARITY[ind.id],
-        ind.min,  // bound storico minimo
-        ind.max   // bound storico massimo
+        POLARITY[ind.id]
+        // Niente min/max = niente clamping
       );
     }
     return ind.zScore;  // Mantieni z-score originale se non modificato
