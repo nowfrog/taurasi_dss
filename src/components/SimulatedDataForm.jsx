@@ -2,11 +2,13 @@ import React, { useState, useMemo } from 'react';
 import { INDICATORS, DOMAIN_COLORS, DOMAIN_NAMES, BENCHMARKS, PCA_RESULTS, POLARITY, DOMAIN_INDICATORS } from '../data/taurasi';
 
 // Funzioni di calcolo inline per evitare dipendenze circolari
+const Z_SCORE_CAP = 6.0; // Limiti teorici basati sulla PCA
+
 function calculateZScore(value, mean, std, polarity) {
   if (std === 0 || std < 0.0000001) return 0;
   let z = polarity * ((value - mean) / std);
-  if (z > 3) z = 3;
-  if (z < -3) z = -3;
+  if (z > Z_SCORE_CAP) z = Z_SCORE_CAP;
+  if (z < -Z_SCORE_CAP) z = -Z_SCORE_CAP;
   return z;
 }
 

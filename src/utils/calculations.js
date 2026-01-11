@@ -21,7 +21,7 @@ export function normalizeMinMax(rawValue, L, U) {
 // ============================================
 // CALCOLO Z-SCORE (con cap per evitare valori estremi)
 // ============================================
-const Z_SCORE_CAP = 3.0; // Standard statistico per gestire outliers
+const Z_SCORE_CAP = 6.0; // Limiti teorici basati sulla PCA
 
 export function calculateZScore(value, mean, std, polarity) {
   if (std === 0 || std < 0.0000001) return 0;
