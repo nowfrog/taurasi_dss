@@ -12,9 +12,9 @@ import {
 // NORMALIZZAZIONE MIN-MAX (0-100)
 // ============================================
 export function normalizeMinMax(rawValue, L, U) {
-  // Normalizzazione senza cap a 0-100
-  // I valori possono superare 100 se il valore simulato supera i bounds storici
-  const norm = ((rawValue - L) / (U - L)) * 100;
+  let norm = ((rawValue - L) / (U - L)) * 100;
+  if (norm < 0) norm = 0;
+  if (norm > 100) norm = 100;
   return norm;
 }
 
