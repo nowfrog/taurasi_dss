@@ -219,6 +219,14 @@ export function runSimulation(activeInterventions, interventions) {
     simulatedIndicators[0].simulatedValue = (agriFirms / totalFirms) * 100;
   }
 
+  // Auto-calcola Water Leaks (indicatore 6) da Water Input (4) e Water Supply (5)
+  // Water Leaks = 1 - (waterSupply / waterInput)
+  const waterInput = simulatedIndicators[3].simulatedValue;  // index 3 = indicator 4
+  const waterSupply = simulatedIndicators[4].simulatedValue; // index 4 = indicator 5
+  if (waterInput > 0) {
+    simulatedIndicators[5].simulatedValue = 1 - (waterSupply / waterInput); // index 5 = indicator 6
+  }
+
   // Ricalcola z-scores per indicatori modificati
   // NON usa clamping per le simulazioni degli interventi predefiniti
   // (il clamping è usato solo nel form di input manuale per valori estremi)
