@@ -32,10 +32,18 @@ function calculateIndicatorContribution(zScore, loadings, variance) {
 }
 
 export default function SimulatedDataForm({ isOpen, onClose, currentState }) {
-  // Stato per i valori simulati degli indicatori
+  // Stato per i valori simulati degli indicatori (numerici per i calcoli)
   const [simulatedValues, setSimulatedValues] = useState(() =>
     INDICATORS.reduce((acc, ind) => {
       acc[ind.id] = ind.value;
+      return acc;
+    }, {})
+  );
+
+  // Stato per i valori di input (stringhe per permettere editing fluido)
+  const [inputValues, setInputValues] = useState(() =>
+    INDICATORS.reduce((acc, ind) => {
+      acc[ind.id] = ind.value.toString();
       return acc;
     }, {})
   );
@@ -95,20 +103,57 @@ export default function SimulatedDataForm({ isOpen, onClose, currentState }) {
     };
   }, [simulatedValues]);
 
-  const handleValueChange = (indicatorId, value) => {
-    setSimulatedValues(prev => ({
+  // Gestisce il cambio dell'input (stringa) - aggiorna in tempo reale
+  const handleInputChange = (indicatorId, value) => {
+    setInputValues(prev => ({
       ...prev,
-      [indicatorId]: parseFloat(value) || 0
+      [indicatorId]: value
     }));
+
+    // Aggiorna anche il valore numerico se è un numero valido
+    const numValue = parseFloat(value);
+    if (!isNaN(numValue)) {
+      setSimulatedValues(prev => ({
+        ...prev,
+        [indicatorId]: numValue
+      }));
+    }
+  };
+
+  // Gestisce il blur (quando l'utente esce dal campo)
+  const handleInputBlur = (indicatorId, value) => {
+    const numValue = parseFloat(value);
+    if (isNaN(numValue) || value.trim() === '') {
+      // Se il valore non è valido, ripristina il baseline
+      const baseline = INDICATORS.find(ind => ind.id === indicatorId)?.value || 0;
+      setInputValues(prev => ({
+        ...prev,
+        [indicatorId]: baseline.toString()
+      }));
+      setSimulatedValues(prev => ({
+        ...prev,
+        [indicatorId]: baseline
+      }));
+    } else {
+      // Normalizza la visualizzazione
+      setInputValues(prev => ({
+        ...prev,
+        [indicatorId]: numValue.toString()
+      }));
+    }
   };
 
   const resetToBaseline = () => {
-    setSimulatedValues(
-      INDICATORS.reduce((acc, ind) => {
-        acc[ind.id] = ind.value;
-        return acc;
-      }, {})
-    );
+    const baselineValues = INDICATORS.reduce((acc, ind) => {
+      acc[ind.id] = ind.value;
+      return acc;
+    }, {});
+    const baselineInputs = INDICATORS.reduce((acc, ind) => {
+      acc[ind.id] = ind.value.toString();
+      return acc;
+    }, {});
+    setSimulatedValues(baselineValues);
+    setInputValues(baselineInputs);
   };
 
   const mceiDelta = simulatedResults.mcei - currentState.mcei;
@@ -186,6 +231,7 @@ export default function SimulatedDataForm({ isOpen, onClose, currentState }) {
                 <div className="p-4 space-y-3">
                   {indicators.map(ind => {
                     const currentVal = simulatedValues[ind.id];
+                    const inputVal = inputValues[ind.id];
                     const baselineVal = ind.value;
                     const delta = currentVal - baselineVal;
                     const deltaPercent = baselineVal !== 0 ? (delta / baselineVal) * 100 : 0;
@@ -198,10 +244,11 @@ export default function SimulatedDataForm({ isOpen, onClose, currentState }) {
                         </label>
                         <div className="flex items-center gap-2">
                           <input
-                            type="number"
-                            step="any"
-                            value={currentVal}
-                            onChange={(e) => handleValueChange(ind.id, e.target.value)}
+                            type="text"
+                            inputMode="decimal"
+                            value={inputVal}
+                            onChange={(e) => handleInputChange(ind.id, e.target.value)}
+                            onBlur={(e) => handleInputBlur(ind.id, e.target.value)}
                             className="flex-1 px-3 py-1.5 border rounded text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                           />
                           <span className="text-xs text-gray-400 w-20">
