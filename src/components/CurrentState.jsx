@@ -1,22 +1,16 @@
 import React from 'react';
-import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer } from 'recharts';
-
-const DOMAIN_NAMES = {
-  GE: "Green Enterprise",
-  SM: "Sustainable Mobility",
-  BRS: "Biodiversity Resource Saving",
-  WM: "Water Management",
-  CW: "Collected Waste",
-  DECI: "DECI"
-};
+import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer, Cell } from 'recharts';
+import { DOMAIN_COLORS, DOMAIN_NAMES } from '../data/taurasi';
 
 export default function CurrentState({ currentState }) {
   const { domains, mcei } = currentState;
 
   const radarData = Object.entries(domains).map(([key, value]) => ({
     domain: DOMAIN_NAMES[key],
+    domainKey: key,
     value: value,
-    fullMark: 100
+    fullMark: 100,
+    color: DOMAIN_COLORS[key].main
   }));
 
   return (
@@ -60,12 +54,21 @@ export default function CurrentState({ currentState }) {
         <h3 className="font-medium text-gray-700">Domain Performances</h3>
         {Object.entries(domains).map(([key, value]) => (
           <div key={key} className="flex justify-between items-center">
-            <span className="text-sm text-gray-600">{DOMAIN_NAMES[key]}</span>
+            <div className="flex items-center gap-2">
+              <div
+                className="w-3 h-3 rounded-full"
+                style={{ backgroundColor: DOMAIN_COLORS[key].main }}
+              />
+              <span className="text-sm text-gray-600">{DOMAIN_NAMES[key]}</span>
+            </div>
             <div className="flex items-center gap-2">
               <div className="w-24 bg-gray-200 rounded-full h-2">
                 <div
-                  className="bg-green-500 h-2 rounded-full"
-                  style={{ width: `${Math.min(value, 100)}%` }}
+                  className="h-2 rounded-full"
+                  style={{
+                    width: `${Math.min(value, 100)}%`,
+                    backgroundColor: DOMAIN_COLORS[key].main
+                  }}
                 />
               </div>
               <span className="text-sm font-medium w-12 text-right">{value.toFixed(1)}</span>

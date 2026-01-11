@@ -1,12 +1,14 @@
 import React from 'react';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Cell } from 'recharts';
+import { DOMAIN_COLORS, DOMAIN_NAMES } from '../data/taurasi';
 
-const DOMAIN_NAMES = {
-  GE: "Green Enterprise",
-  SM: "Sustainable Mobility",
-  BRS: "Biodiversity",
+// Nomi abbreviati per il grafico
+const DOMAIN_SHORT_NAMES = {
+  GE: "Green Ent.",
+  SM: "Sust. Mob.",
+  BRS: "Biodiv.",
   WM: "Water Mgmt",
-  CW: "Collected Waste",
+  CW: "Coll. Waste",
   DECI: "DECI"
 };
 
@@ -24,9 +26,12 @@ export default function WhatIfSimulation({
 
   // Dati per grafico confronto
   const comparisonData = Object.keys(currentState.domains).map(key => ({
-    domain: DOMAIN_NAMES[key],
+    domain: DOMAIN_SHORT_NAMES[key],
+    domainKey: key,
     Current: currentState.domains[key],
-    Simulated: simDomains[key]
+    Simulated: simDomains[key],
+    color: DOMAIN_COLORS[key].main,
+    colorLight: DOMAIN_COLORS[key].light
   }));
 
   // Calcola delta
@@ -91,16 +96,24 @@ export default function WhatIfSimulation({
 
         {/* Grafico Confronto */}
         {activeInterventions.length > 0 && (
-          <div className="h-48 mb-4">
+          <div className="h-56 mb-4">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={comparisonData} layout="vertical">
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis type="number" domain={[0, 100]} />
-                <YAxis dataKey="domain" type="category" width={80} tick={{ fontSize: 10 }} />
+                <YAxis dataKey="domain" type="category" width={75} tick={{ fontSize: 9 }} />
                 <Tooltip />
                 <Legend />
-                <Bar dataKey="Current" fill="#94a3b8" name="Current" />
-                <Bar dataKey="Simulated" fill="#3b82f6" name="Simulated" />
+                <Bar dataKey="Current" name="Current">
+                  {comparisonData.map((entry, index) => (
+                    <Cell key={`current-${index}`} fill={entry.colorLight} stroke={entry.color} strokeWidth={1} />
+                  ))}
+                </Bar>
+                <Bar dataKey="Simulated" name="Simulated">
+                  {comparisonData.map((entry, index) => (
+                    <Cell key={`simulated-${index}`} fill={entry.color} />
+                  ))}
+                </Bar>
               </BarChart>
             </ResponsiveContainer>
           </div>
