@@ -103,8 +103,19 @@ export default function SimulatedDataForm({ isOpen, onClose, currentState }) {
     };
   }, [simulatedValues]);
 
+  // Calcola waterLeaks automaticamente da waterInput e waterSupply
+  // Indicatore 4 = waterInput, Indicatore 5 = waterSupply, Indicatore 6 = waterLeaks
+  const calculateWaterLeaks = (waterInput, waterSupply) => {
+    if (waterInput <= 0) return 0;
+    const leaks = 1 - (waterSupply / waterInput);
+    return Math.max(0, Math.min(1, leaks)); // Clamp tra 0 e 1
+  };
+
   // Gestisce il cambio dell'input (stringa) - aggiorna in tempo reale
   const handleInputChange = (indicatorId, value) => {
+    // Non permettere modifiche dirette a waterLeaks (indicatore 6)
+    if (indicatorId === 6) return;
+
     setInputValues(prev => ({
       ...prev,
       [indicatorId]: value
@@ -113,15 +124,35 @@ export default function SimulatedDataForm({ isOpen, onClose, currentState }) {
     // Aggiorna anche il valore numerico se è un numero valido
     const numValue = parseFloat(value);
     if (!isNaN(numValue)) {
-      setSimulatedValues(prev => ({
-        ...prev,
-        [indicatorId]: numValue
-      }));
+      setSimulatedValues(prev => {
+        const newValues = {
+          ...prev,
+          [indicatorId]: numValue
+        };
+
+        // Se cambia waterInput (4) o waterSupply (5), ricalcola waterLeaks (6)
+        if (indicatorId === 4 || indicatorId === 5) {
+          const waterInput = indicatorId === 4 ? numValue : prev[4];
+          const waterSupply = indicatorId === 5 ? numValue : prev[5];
+          const waterLeaks = calculateWaterLeaks(waterInput, waterSupply);
+          newValues[6] = waterLeaks;
+          // Aggiorna anche l'input visualizzato per waterLeaks
+          setInputValues(prevInput => ({
+            ...prevInput,
+            [6]: waterLeaks.toFixed(6)
+          }));
+        }
+
+        return newValues;
+      });
     }
   };
 
   // Gestisce il blur (quando l'utente esce dal campo)
   const handleInputBlur = (indicatorId, value) => {
+    // Non permettere modifiche dirette a waterLeaks (indicatore 6)
+    if (indicatorId === 6) return;
+
     const numValue = parseFloat(value);
     if (isNaN(numValue) || value.trim() === '') {
       // Se il valore non è valido, ripristina il baseline
@@ -134,6 +165,15 @@ export default function SimulatedDataForm({ isOpen, onClose, currentState }) {
         ...prev,
         [indicatorId]: baseline
       }));
+
+      // Se era waterInput o waterSupply, ricalcola waterLeaks
+      if (indicatorId === 4 || indicatorId === 5) {
+        const waterInput = indicatorId === 4 ? baseline : simulatedValues[4];
+        const waterSupply = indicatorId === 5 ? baseline : simulatedValues[5];
+        const waterLeaks = calculateWaterLeaks(waterInput, waterSupply);
+        setSimulatedValues(prev => ({ ...prev, [6]: waterLeaks }));
+        setInputValues(prev => ({ ...prev, [6]: waterLeaks.toFixed(6) }));
+      }
     } else {
       // Normalizza la visualizzazione
       setInputValues(prev => ({
@@ -235,21 +275,28 @@ export default function SimulatedDataForm({ isOpen, onClose, currentState }) {
                     const baselineVal = ind.value;
                     const delta = currentVal - baselineVal;
                     const deltaPercent = baselineVal !== 0 ? (delta / baselineVal) * 100 : 0;
+                    const isWaterLeaks = ind.id === 6; // Water Leaks è calcolato automaticamente
 
                     return (
                       <div key={ind.id} className="space-y-1">
                         <label className="text-sm text-gray-600 block">
                           {ind.name}
                           <span className="text-gray-400 ml-1">({ind.unit})</span>
+                          {isWaterLeaks && <span className="text-blue-500 ml-1 text-xs">(auto)</span>}
                         </label>
                         <div className="flex items-center gap-2">
                           <input
                             type="text"
                             inputMode="decimal"
-                            value={inputVal}
+                            value={isWaterLeaks ? currentVal.toFixed(4) : inputVal}
                             onChange={(e) => handleInputChange(ind.id, e.target.value)}
                             onBlur={(e) => handleInputBlur(ind.id, e.target.value)}
-                            className="flex-1 px-3 py-1.5 border rounded text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                            readOnly={isWaterLeaks}
+                            className={`flex-1 px-3 py-1.5 border rounded text-sm ${
+                              isWaterLeaks
+                                ? 'bg-gray-100 text-gray-500 cursor-not-allowed'
+                                : 'focus:ring-2 focus:ring-blue-500 focus:border-blue-500'
+                            }`}
                           />
                           <span className="text-xs text-gray-400 w-20">
                             Base: {baselineVal.toFixed(2)}
