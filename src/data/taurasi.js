@@ -509,3 +509,27 @@ export const GOAL_PROGRAMMING_WEIGHTS = {
   social: 2,
   npv: 2
 };
+
+// ============================================
+// COLORI PER I DOMINI (per visualizzazioni)
+// ============================================
+export const DOMAIN_COLORS = {
+  GE: { main: "#22c55e", light: "#bbf7d0", name: "Green" },      // Verde
+  SM: { main: "#f59e0b", light: "#fef3c7", name: "Amber" },      // Ambra
+  BRS: { main: "#06b6d4", light: "#cffafe", name: "Cyan" },      // Ciano
+  WM: { main: "#3b82f6", light: "#dbeafe", name: "Blue" },       // Blu
+  CW: { main: "#a855f7", light: "#f3e8ff", name: "Purple" },     // Viola
+  DECI: { main: "#ef4444", light: "#fecaca", name: "Red" }       // Rosso
+};
+
+// ============================================
+// NOMI DEI DOMINI
+// ============================================
+export const DOMAIN_NAMES = {
+  GE: "Green Enterprise",
+  SM: "Sustainable Mobility",
+  BRS: "Biodiversity Resource Saving",
+  WM: "Water Management",
+  CW: "Collected Waste",
+  DECI: "DECI"
+};

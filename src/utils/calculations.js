@@ -19,11 +19,17 @@ export function normalizeMinMax(rawValue, L, U) {
 }
 
 // ============================================
-// CALCOLO Z-SCORE
+// CALCOLO Z-SCORE (con cap per evitare valori estremi)
 // ============================================
+const Z_SCORE_CAP = 3.0; // Standard statistico per gestire outliers
+
 export function calculateZScore(value, mean, std, polarity) {
   if (std === 0 || std < 0.0000001) return 0;
-  return polarity * ((value - mean) / std);
+  let z = polarity * ((value - mean) / std);
+  // Cap z-scores per evitare valori estremi da simulazioni aggressive
+  if (z > Z_SCORE_CAP) z = Z_SCORE_CAP;
+  if (z < -Z_SCORE_CAP) z = -Z_SCORE_CAP;
+  return z;
 }
 
 // ============================================

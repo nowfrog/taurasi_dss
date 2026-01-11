@@ -1,6 +1,6 @@
 import React from 'react';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-import { INTERVENTIONS } from '../data/taurasi';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Cell } from 'recharts';
+import { INTERVENTIONS, DOMAIN_COLORS } from '../data/taurasi';
 import { calculateInterventionCosts } from '../utils/calculations';
 
 const OBJECTIVE_LABELS = {
@@ -8,6 +8,14 @@ const OBJECTIVE_LABELS = {
   max_environmental: "Max Environmental",
   max_social: "Max Social",
   max_npv: "Max NPV"
+};
+
+// Colori per gli obiettivi di ottimizzazione
+const OBJECTIVE_COLORS = {
+  best_overall: "#8b5cf6",      // Viola
+  max_environmental: "#22c55e", // Verde
+  max_social: "#f59e0b",        // Ambra
+  max_npv: "#3b82f6"            // Blu
 };
 
 export default function OptimalStrategy({
@@ -24,7 +32,9 @@ export default function OptimalStrategy({
   // Dati per grafico confronto scenari
   const scenarioComparisonData = allScenarios.map(scenario => ({
     scenario: OBJECTIVE_LABELS[scenario.objective],
-    "MCEI": scenario.mcei || 0
+    objective: scenario.objective,
+    MCEI: scenario.mcei || 0,
+    color: OBJECTIVE_COLORS[scenario.objective]
   }));
 
   const mceiDelta = (results?.mcei || currentState.mcei) - currentState.mcei;
@@ -115,7 +125,11 @@ export default function OptimalStrategy({
               <YAxis tick={{ fontSize: 10 }} domain={[0, 100]} />
               <Tooltip />
               <Legend wrapperStyle={{ fontSize: 10 }} />
-              <Bar dataKey="MCEI" fill="#3b82f6" name="MCEI" />
+              <Bar dataKey="MCEI" name="MCEI">
+                {scenarioComparisonData.map((entry, index) => (
+                  <Cell key={`cell-${index}`} fill={entry.color} />
+                ))}
+              </Bar>
             </BarChart>
           </ResponsiveContainer>
         </div>
