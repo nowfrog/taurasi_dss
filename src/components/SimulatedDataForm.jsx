@@ -2,13 +2,17 @@ import React, { useState, useMemo } from 'react';
 import { INDICATORS, DOMAIN_COLORS, DOMAIN_NAMES, BENCHMARKS, PCA_RESULTS, POLARITY, DOMAIN_INDICATORS } from '../data/taurasi';
 
 // Funzioni di calcolo inline per evitare dipendenze circolari
-const Z_SCORE_CAP = 6.0; // Limiti teorici basati sulla PCA
-
-function calculateZScore(value, mean, std, polarity) {
+function calculateZScore(value, mean, std, polarity, min = null, max = null) {
   if (std === 0 || std < 0.0000001) return 0;
-  let z = polarity * ((value - mean) / std);
-  if (z > Z_SCORE_CAP) z = Z_SCORE_CAP;
-  if (z < -Z_SCORE_CAP) z = -Z_SCORE_CAP;
+
+  // CLAMP: limita il valore ai bounds storici prima di calcolare lo z-score
+  let valueClamped = value;
+  if (min !== null && max !== null) {
+    valueClamped = Math.max(min, Math.min(max, value));
+  }
+
+  // Calcola z-score con polarità
+  const z = polarity * ((valueClamped - mean) / std);
   return z;
 }
 
@@ -40,13 +44,15 @@ export default function SimulatedDataForm({ isOpen, onClose, currentState }) {
 
   // Calcola i risultati con i valori simulati
   const simulatedResults = useMemo(() => {
-    // Calcola z-scores per i valori simulati
+    // Calcola z-scores per i valori simulati (con clamping ai bounds storici)
     const zScores = INDICATORS.map((ind) => {
       return calculateZScore(
         simulatedValues[ind.id],
         ind.mean,
         ind.std,
-        POLARITY[ind.id]
+        POLARITY[ind.id],
+        ind.min,  // bound storico minimo
+        ind.max   // bound storico massimo
       );
     });
 
