@@ -19,16 +19,20 @@ export function normalizeMinMax(rawValue, L, U) {
 }
 
 // ============================================
-// CALCOLO Z-SCORE (con cap per evitare valori estremi)
+// CALCOLO Z-SCORE (con clamping ai bounds storici)
 // ============================================
-const Z_SCORE_CAP = 3.0; // Standard statistico per gestire outliers
-
-export function calculateZScore(value, mean, std, polarity) {
+export function calculateZScore(value, mean, std, polarity, min = null, max = null) {
   if (std === 0 || std < 0.0000001) return 0;
-  let z = polarity * ((value - mean) / std);
-  // Cap z-scores per evitare valori estremi da simulazioni aggressive
-  if (z > Z_SCORE_CAP) z = Z_SCORE_CAP;
-  if (z < -Z_SCORE_CAP) z = -Z_SCORE_CAP;
+
+  // CLAMP: limita il valore ai bounds storici prima di calcolare lo z-score
+  // Questo evita z-scores estremi quando i valori simulati escono dalla serie storica
+  let valueClamped = value;
+  if (min !== null && max !== null) {
+    valueClamped = Math.max(min, Math.min(max, value));
+  }
+
+  // Calcola z-score con polarità
+  const z = polarity * ((valueClamped - mean) / std);
   return z;
 }
 
@@ -216,6 +220,8 @@ export function runSimulation(activeInterventions, interventions) {
   }
 
   // Ricalcola z-scores per indicatori modificati
+  // NON usa clamping per le simulazioni degli interventi predefiniti
+  // (il clamping è usato solo nel form di input manuale per valori estremi)
   const simulatedZScores = simulatedIndicators.map((ind) => {
     if (ind.simulatedValue !== ind.value) {
       return calculateZScore(
@@ -223,6 +229,7 @@ export function runSimulation(activeInterventions, interventions) {
         ind.mean,
         ind.std,
         POLARITY[ind.id]
+        // Niente min/max = niente clamping
       );
     }
     return ind.zScore;  // Mantieni z-score originale se non modificato

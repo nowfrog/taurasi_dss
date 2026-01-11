@@ -110,6 +110,7 @@ export default function App() {
           {/* Sezione 1: Stato Attuale */}
           <CurrentState
             currentState={currentState}
+            simulationResults={simulationResults}
           />
 
           {/* Sezione 2: Simulazione What-If */}

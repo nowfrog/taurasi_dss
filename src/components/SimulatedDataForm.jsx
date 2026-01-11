@@ -2,11 +2,17 @@ import React, { useState, useMemo } from 'react';
 import { INDICATORS, DOMAIN_COLORS, DOMAIN_NAMES, BENCHMARKS, PCA_RESULTS, POLARITY, DOMAIN_INDICATORS } from '../data/taurasi';
 
 // Funzioni di calcolo inline per evitare dipendenze circolari
-function calculateZScore(value, mean, std, polarity) {
+function calculateZScore(value, mean, std, polarity, min = null, max = null) {
   if (std === 0 || std < 0.0000001) return 0;
-  let z = polarity * ((value - mean) / std);
-  if (z > 3) z = 3;
-  if (z < -3) z = -3;
+
+  // CLAMP: limita il valore ai bounds storici prima di calcolare lo z-score
+  let valueClamped = value;
+  if (min !== null && max !== null) {
+    valueClamped = Math.max(min, Math.min(max, value));
+  }
+
+  // Calcola z-score con polarità
+  const z = polarity * ((valueClamped - mean) / std);
   return z;
 }
 
@@ -26,10 +32,18 @@ function calculateIndicatorContribution(zScore, loadings, variance) {
 }
 
 export default function SimulatedDataForm({ isOpen, onClose, currentState }) {
-  // Stato per i valori simulati degli indicatori
+  // Stato per i valori simulati degli indicatori (numerici per i calcoli)
   const [simulatedValues, setSimulatedValues] = useState(() =>
     INDICATORS.reduce((acc, ind) => {
       acc[ind.id] = ind.value;
+      return acc;
+    }, {})
+  );
+
+  // Stato per i valori di input (stringhe per permettere editing fluido)
+  const [inputValues, setInputValues] = useState(() =>
+    INDICATORS.reduce((acc, ind) => {
+      acc[ind.id] = ind.value.toString();
       return acc;
     }, {})
   );
@@ -38,13 +52,15 @@ export default function SimulatedDataForm({ isOpen, onClose, currentState }) {
 
   // Calcola i risultati con i valori simulati
   const simulatedResults = useMemo(() => {
-    // Calcola z-scores per i valori simulati
+    // Calcola z-scores per i valori simulati (con clamping ai bounds storici)
     const zScores = INDICATORS.map((ind) => {
       return calculateZScore(
         simulatedValues[ind.id],
         ind.mean,
         ind.std,
-        POLARITY[ind.id]
+        POLARITY[ind.id],
+        ind.min,  // bound storico minimo
+        ind.max   // bound storico massimo
       );
     });
 
@@ -87,20 +103,97 @@ export default function SimulatedDataForm({ isOpen, onClose, currentState }) {
     };
   }, [simulatedValues]);
 
-  const handleValueChange = (indicatorId, value) => {
-    setSimulatedValues(prev => ({
+  // Calcola waterLeaks automaticamente da waterInput e waterSupply
+  // Indicatore 4 = waterInput, Indicatore 5 = waterSupply, Indicatore 6 = waterLeaks
+  const calculateWaterLeaks = (waterInput, waterSupply) => {
+    if (waterInput <= 0) return 0;
+    const leaks = 1 - (waterSupply / waterInput);
+    return Math.max(0, Math.min(1, leaks)); // Clamp tra 0 e 1
+  };
+
+  // Gestisce il cambio dell'input (stringa) - aggiorna in tempo reale
+  const handleInputChange = (indicatorId, value) => {
+    // Non permettere modifiche dirette a waterLeaks (indicatore 6)
+    if (indicatorId === 6) return;
+
+    setInputValues(prev => ({
       ...prev,
-      [indicatorId]: parseFloat(value) || 0
+      [indicatorId]: value
     }));
+
+    // Aggiorna anche il valore numerico se è un numero valido
+    const numValue = parseFloat(value);
+    if (!isNaN(numValue)) {
+      setSimulatedValues(prev => {
+        const newValues = {
+          ...prev,
+          [indicatorId]: numValue
+        };
+
+        // Se cambia waterInput (4) o waterSupply (5), ricalcola waterLeaks (6)
+        if (indicatorId === 4 || indicatorId === 5) {
+          const waterInput = indicatorId === 4 ? numValue : prev[4];
+          const waterSupply = indicatorId === 5 ? numValue : prev[5];
+          const waterLeaks = calculateWaterLeaks(waterInput, waterSupply);
+          newValues[6] = waterLeaks;
+          // Aggiorna anche l'input visualizzato per waterLeaks
+          setInputValues(prevInput => ({
+            ...prevInput,
+            [6]: waterLeaks.toFixed(6)
+          }));
+        }
+
+        return newValues;
+      });
+    }
+  };
+
+  // Gestisce il blur (quando l'utente esce dal campo)
+  const handleInputBlur = (indicatorId, value) => {
+    // Non permettere modifiche dirette a waterLeaks (indicatore 6)
+    if (indicatorId === 6) return;
+
+    const numValue = parseFloat(value);
+    if (isNaN(numValue) || value.trim() === '') {
+      // Se il valore non è valido, ripristina il baseline
+      const baseline = INDICATORS.find(ind => ind.id === indicatorId)?.value || 0;
+      setInputValues(prev => ({
+        ...prev,
+        [indicatorId]: baseline.toString()
+      }));
+      setSimulatedValues(prev => ({
+        ...prev,
+        [indicatorId]: baseline
+      }));
+
+      // Se era waterInput o waterSupply, ricalcola waterLeaks
+      if (indicatorId === 4 || indicatorId === 5) {
+        const waterInput = indicatorId === 4 ? baseline : simulatedValues[4];
+        const waterSupply = indicatorId === 5 ? baseline : simulatedValues[5];
+        const waterLeaks = calculateWaterLeaks(waterInput, waterSupply);
+        setSimulatedValues(prev => ({ ...prev, [6]: waterLeaks }));
+        setInputValues(prev => ({ ...prev, [6]: waterLeaks.toFixed(6) }));
+      }
+    } else {
+      // Normalizza la visualizzazione
+      setInputValues(prev => ({
+        ...prev,
+        [indicatorId]: numValue.toString()
+      }));
+    }
   };
 
   const resetToBaseline = () => {
-    setSimulatedValues(
-      INDICATORS.reduce((acc, ind) => {
-        acc[ind.id] = ind.value;
-        return acc;
-      }, {})
-    );
+    const baselineValues = INDICATORS.reduce((acc, ind) => {
+      acc[ind.id] = ind.value;
+      return acc;
+    }, {});
+    const baselineInputs = INDICATORS.reduce((acc, ind) => {
+      acc[ind.id] = ind.value.toString();
+      return acc;
+    }, {});
+    setSimulatedValues(baselineValues);
+    setInputValues(baselineInputs);
   };
 
   const mceiDelta = simulatedResults.mcei - currentState.mcei;
@@ -178,23 +271,32 @@ export default function SimulatedDataForm({ isOpen, onClose, currentState }) {
                 <div className="p-4 space-y-3">
                   {indicators.map(ind => {
                     const currentVal = simulatedValues[ind.id];
+                    const inputVal = inputValues[ind.id];
                     const baselineVal = ind.value;
                     const delta = currentVal - baselineVal;
                     const deltaPercent = baselineVal !== 0 ? (delta / baselineVal) * 100 : 0;
+                    const isWaterLeaks = ind.id === 6; // Water Leaks è calcolato automaticamente
 
                     return (
                       <div key={ind.id} className="space-y-1">
                         <label className="text-sm text-gray-600 block">
                           {ind.name}
                           <span className="text-gray-400 ml-1">({ind.unit})</span>
+                          {isWaterLeaks && <span className="text-blue-500 ml-1 text-xs">(auto)</span>}
                         </label>
                         <div className="flex items-center gap-2">
                           <input
-                            type="number"
-                            step="any"
-                            value={currentVal}
-                            onChange={(e) => handleValueChange(ind.id, e.target.value)}
-                            className="flex-1 px-3 py-1.5 border rounded text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                            type="text"
+                            inputMode="decimal"
+                            value={isWaterLeaks ? currentVal.toFixed(4) : inputVal}
+                            onChange={(e) => handleInputChange(ind.id, e.target.value)}
+                            onBlur={(e) => handleInputBlur(ind.id, e.target.value)}
+                            readOnly={isWaterLeaks}
+                            className={`flex-1 px-3 py-1.5 border rounded text-sm ${
+                              isWaterLeaks
+                                ? 'bg-gray-100 text-gray-500 cursor-not-allowed'
+                                : 'focus:ring-2 focus:ring-blue-500 focus:border-blue-500'
+                            }`}
                           />
                           <span className="text-xs text-gray-400 w-20">
                             Base: {baselineVal.toFixed(2)}
