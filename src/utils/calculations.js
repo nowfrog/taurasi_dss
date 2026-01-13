@@ -220,18 +220,17 @@ export function runSimulation(activeInterventions, interventions) {
   }
 
   // Ricalcola z-scores per indicatori modificati
-  // Applica clamping degli z-scores a ±6 (limiti teorici PCA)
+  // NON usa clamping per le simulazioni degli interventi predefiniti
+  // (il clamping è usato solo nel form di input manuale per valori estremi)
   const simulatedZScores = simulatedIndicators.map((ind) => {
     if (ind.simulatedValue !== ind.value) {
-      let z = calculateZScore(
+      return calculateZScore(
         ind.simulatedValue,
         ind.mean,
         ind.std,
         POLARITY[ind.id]
+        // Niente min/max = niente clamping
       );
-      // Clamp z-score ai limiti teorici PCA (±6)
-      z = Math.max(-6, Math.min(6, z));
-      return z;
     }
     return ind.zScore;  // Mantieni z-score originale se non modificato
   });
