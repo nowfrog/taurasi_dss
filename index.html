@@ -1,16 +1,609 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>H-SMA-CE DSS - Taurasi</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
-  </body>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>H-SMA-CE | Decision Support System for Circular Economy Transition</title>
+    <meta name="description" content="PRIN 2022 Research Project developing a Circular Economy model for Historical Small Towns, with Taurasi (Campania) as case study.">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='%23163860'/%3E%3Ctext x='50' y='62' font-family='Georgia' font-size='32' fill='white' text-anchor='middle' font-weight='bold'%3EH%3C/text%3E%3C/svg%3E">
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="top-logo-bar">
+    <div class="top-logo-bar-container">
+        <img src="images/logos/logo1.png" alt="Logo 1">
+        <span class="logo-divider"></span>
+        <img src="images/logos/logo2.png" alt="Logo 2">
+        <span class="logo-divider"></span>
+        <img src="images/logos/logo3.png" alt="Logo 3">
+    </div>
+</div>
+
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <span class="logo-text">H-SMA-CE</span>
+                <span class="logo-badge">PRIN 2022</span>
+            </a>
+            
+            <ul class="nav-links" id="navLinks">
+                <li><a href="index.html" class="active">Home</a></li>
+                <li><a href="#project">The Project</a></li>
+                <li><a href="#team">Team</a></li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle">
+                        Research Activities
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="6 9 12 15 18 9"></polyline>
+                        </svg>
+                    </a>
+                    <div class="dropdown-menu">
+                        <a href="ra1.html">RA1 – Context Analysis</a>
+                        <a href="ra2.html">RA2 – Circular Scenario</a>
+                        <a href="ra3.html">RA3 – Method & Modelling</a>
+                        <a href="ra4.html">RA4 – DSS Development</a>
+                    </div>
+                </li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle">
+                        Dissemination
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="6 9 12 15 18 9"></polyline>
+                        </svg>
+                    </a>
+                    <div class="dropdown-menu">
+                        <a href="publications.html">Publications</a>
+                        <a href="conferences.html">Conferences</a>
+                        <a href="events.html">Events & Missions</a>
+                    </div>
+                </li>
+                <li><a href="dss.html">DSS Demo</a></li>
+                <li><a href="contacts.html">Contact</a></li>
+            </ul>
+            
+            <div class="hamburger" id="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="hero" id="home">
+        <div class="hero-background">
+            <div class="hero-slide active" style="background-image: url('images/slide1.jpg');"></div>
+            <div class="hero-slide" style="background-image: url('images/slide2.jpg');"></div>
+            <div class="hero-slide" style="background-image: url('images/slide3.jpg');"></div>
+        </div>
+        
+        <div class="hero-content">
+            <div class="hero-badge">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <path d="M12 6v6l4 2"></path>
+                </svg>
+                PRIN 2022 • Funded by MUR
+            </div>
+            
+            <h1>H-SMA-CE</h1>
+            
+            <p class="hero-subtitle">A Decision Support System for Circular Economy Transition</p>
+            
+            <p class="hero-description">
+                 A Circular Economy model for improving both liveability and attractiveness of Historical Small Towns
+(HST) and boosting their socioeconomic development.
+            </p>
+            
+            <div class="hero-buttons">
+                <a href="#project" class="btn btn-primary">
+                    Discover the Project
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M5 12h14M12 5l7 7-7 7"/>
+                    </svg>
+                </a>
+                <a href="publications.html" class="btn btn-outline">
+                    View Publications
+                </a>
+            </div>
+        </div>
+        
+        <div class="slide-indicators">
+            <button class="slide-indicator active" data-slide="0"></button>
+            <button class="slide-indicator" data-slide="1"></button>
+            <button class="slide-indicator" data-slide="2"></button>
+        </div>
+        
+        <div class="scroll-indicator">
+            <span>Scroll</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 5v14M5 12l7 7 7-7"/>
+            </svg>
+        </div>
+    </header>
+
+    <!-- Project Section -->
+    <section class="section" id="project">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-badge">About the Research</span>
+                <h2 class="section-title">The Project</h2>
+                <p class="section-subtitle">
+                    Building a sustainable future for Italian historical small towns through circular economy principles
+                </p>
+            </div>
+            
+            <div class="project-grid">
+                <div class="project-content">
+                    <h3>Circular Economy for Historical Small Towns</h3>
+                    <p class="project-description">
+                        <strong>H-SMA-CE</strong> is a nationally relevant research project funded under PRIN 2022 
+                        that develops a Circular Economy model for improving liveability and attractiveness of 
+                        Historical Small Towns (HST) in Italy, commonly known as "Borghi," while boosting their 
+                        socioeconomic development.
+                    </p>
+                    <p class="project-description">
+                        The research follows three key phases: <strong>Understanding</strong> — involving in-depth 
+                        analysis of literature and territorial contexts, including flows, value chains and actors; 
+                        <strong>Evaluating</strong> — assessing interventions, developing circularity metrics and 
+                        identifying optimal solutions through multi-objective optimization; and 
+                        <strong>Simulating</strong> — creating a comprehensive spreadsheet-based Decision Support 
+                        System that enables policymakers to optimize waste management and energy efficiency planning.
+                    </p>
+                    <p class="project-description">
+                        The project focuses on the historic town of <strong>Taurasi</strong> in Campania 
+                        as a representative case study — a territory renowned for its prestigious wine production 
+                        and rich cultural traditions.
+                    </p>
+                </div>
+                
+                <div class="features-card">
+                    <h3>
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                        </svg>
+                        Research Activities
+                    </h3>
+                    <div class="feature-list">
+                        <div class="feature-item">
+                            <div class="feature-icon">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
+                                    <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+                                </svg>
+                            </div>
+                            <span class="feature-text"><strong>RA1</strong> – Context Analysis</span>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-icon">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="12" cy="12" r="10"/>
+                                    <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+                                </svg>
+                            </div>
+                            <span class="feature-text"><strong>RA2</strong> – Defining "Circular Scenario"</span>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-icon">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                                    <line x1="3" y1="9" x2="21" y2="9"/>
+                                    <line x1="9" y1="21" x2="9" y2="9"/>
+                                </svg>
+                            </div>
+                            <span class="feature-text"><strong>RA3</strong> – Method and Modelling</span>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-icon">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                                </svg>
+                            </div>
+                            <span class="feature-text"><strong>RA4</strong> – DSS Development</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="stats-section">
+        <div class="container">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">€250K</div>
+                    <div class="stat-label">Total Funding</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">2</div>
+                    <div class="stat-label">Research Units</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">8+</div>
+                    <div class="stat-label">Researchers</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">6+</div>
+                    <div class="stat-label">Publications</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Taurasi Case Study Section -->
+    <section class="section" id="taurasi">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-badge">Case Study</span>
+                <h2 class="section-title">Taurasi: A Living Laboratory</h2>
+                <p class="section-subtitle">
+                    Exploring circular economy potential in one of Italy's most prestigious wine-producing historical towns
+                </p>
+            </div>
+            
+            <div class="taurasi-grid">
+                <!-- Slideshow senza overlay blu -->
+                <div class="taurasi-slideshow">
+                    <div class="taurasi-slide active" style="background-image: url('images/taurasi/taurasi1.jpg');"></div>
+                    <div class="taurasi-slide" style="background-image: url('images/taurasi/taurasi2.jpg');"></div>
+                    <div class="taurasi-slide" style="background-image: url('images/taurasi/taurasi3.jpg');"></div>
+                    <div class="taurasi-indicators">
+                        <button class="taurasi-indicator active" data-slide="0"></button>
+                        <button class="taurasi-indicator" data-slide="1"></button>
+                        <button class="taurasi-indicator" data-slide="2"></button>
+                    </div>
+                </div>
+                
+                <!-- Descrizione -->
+                <div class="taurasi-content">
+                    <h3>A Medieval Borgo with a Viticultural Soul</h3>
+                    <p class="taurasi-description">
+                        Taurasi is a historic hill town located at 398 meters elevation in the Irpinia area of Campania, 
+                        exemplifying the complex nature of Italian <em>borghi</em> that transcend simple categorization. 
+                        Its historical core exhibits medieval origins with subsequent Renaissance and Baroque modifications, 
+                        including the iconic <strong>Castello Marchionale</strong> dating to the Lombard period.
+                    </p>
+                    <p class="taurasi-description">
+                        The town's economic foundation rests upon specialized viticulture developed over centuries. 
+                        Taurasi wine achieved <strong>DOCG status in 1993</strong>, becoming the first wine from Campania 
+                        to receive this prestigious classification. Production follows rigorous standards requiring 
+                        minimum aging of 36 months, creating distinctive aromatic profiles with characteristic 
+                        black cherry and licorice notes.
+                    </p>
+                    <p class="taurasi-description">
+                        Beyond wine, Taurasi's agricultural economy includes significant olive cultivation, particularly 
+                        the indigenous <strong>Ravece variety</strong>. The annual Taurasi Wine Fair and Film Festival 
+                        demonstrate how the community successfully leverages agricultural heritage within contemporary 
+                        tourism frameworks, maintaining a balanced system where tourism enhances rather than replaces 
+                        traditional productive activities.
+                    </p>
+                    
+                    
+                    </div>
+					
+                </div>
+				
+				<div class="taurasi-stats">
+                        <div class="taurasi-stat">
+                            <span class="taurasi-stat-number">17</span>
+                            <span class="taurasi-stat-label">Active Wineries</span>
+                        </div>
+                        <div class="taurasi-stat">
+                            <span class="taurasi-stat-number">1993</span>
+                            <span class="taurasi-stat-label">DOCG Status</span>
+                        </div>
+                        <div class="taurasi-stat">
+                            <span class="taurasi-stat-number">398m</span>
+                            <span class="taurasi-stat-label">Elevation</span>
+                        </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Team Section -->
+    <section class="section section-light" id="team">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-badge">Research Team</span>
+                <h2 class="section-title">Who We Are</h2>
+                <p class="section-subtitle">
+                    A multidisciplinary team from two Italian universities collaborating on circular economy research
+                </p>
+            </div>
+            
+            <div class="partners-grid">
+                <!-- Lead Partner - Messina -->
+                <div class="partner-card lead">
+                    <span class="partner-badge">Lead Partner • RU1</span>
+                    <div class="partner-logo">
+                        <img src="images/logos/unime-logo.png" alt="University of Messina" class="partner-logo-img">
+                    </div>
+                    <h3>University of Messina</h3>
+                    <p>Department of Economics</p>
+                    <p class="partner-cup"><strong>CUP:</strong> J53D23009390006</p>
+                    <span class="partner-role">Principal Investigator Unit</span>
+                    
+                    <div class="team-members-grid">
+                        <!-- Riga 1 -->
+                        <div class="team-member-card">
+                            <img src="images/team/ioppolo.jpg" alt="Prof. Giuseppe Ioppolo" class="team-member-photo">
+                            <div class="team-member-info">
+                                <strong>Prof. Giuseppe Ioppolo</strong>
+                                <span class="team-member-role">PI</span>
+                                <p class="bio-text">Full Professor of Commodity Science. Editor-in-Chief of "Sustainability". H-index: 27.</p>
+                            </div>
+                        </div>
+                        <div class="team-member-card">
+                            <img src="images/team/calabro.jpg" alt="Prof. Grazia Calabrò" class="team-member-photo">
+                            <div class="team-member-info">
+                                <strong>Prof. Grazia Calabrò</strong>
+                                <p class="bio-text">Full Professor of Commodity Science. Expert in sustainability and food quality certification.</p>
+                            </div>
+                        </div>
+                        <!-- Riga 2 -->
+                        <div class="team-member-card">
+                            <img src="images/team/caristi.jpg" alt="Prof. Giuseppe Caristi" class="team-member-photo">
+                            <div class="team-member-info">
+                                <strong>Prof. Giuseppe Caristi</strong>
+                                <p class="bio-text">Professor of Mathematical Economics. Editor-in-Chief of Int. Journal of Mathematical Analysis.</p>
+                            </div>
+                        </div>
+                        <div class="team-member-card">
+                            <img src="images/team/ciliberto.jpg" alt="Dr. Cristina Ciliberto" class="team-member-photo">
+                            <div class="team-member-info">
+                                <strong>Dr. Cristina Ciliberto</strong>
+                                <span class="team-member-role">Research Fellow</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Partner - Napoli -->
+                <div class="partner-card">
+                    <span class="partner-badge">Partner • RU2</span>
+                    <div class="partner-logo">
+                        <img src="images/logos/unior-logo.png" alt="University of Naples L'Orientale" class="partner-logo-img">
+                    </div>
+                    <h3>University of Naples "L'Orientale"</h3>
+                    <p>Department of Human and Social Sciences</p>
+                    <p class="partner-cup"><strong>CUP:</strong> C53D23004860006</p>
+                    <span class="partner-role">Co-Principal Investigator Unit</span>
+                    
+                    <div class="team-members-grid">
+                        <!-- Riga 1 -->
+                        <div class="team-member-card">
+                            <img src="images/team/arbolino.jpg" alt="Prof. Roberta Arbolino" class="team-member-photo">
+                            <div class="team-member-info">
+                                <strong>Prof. Roberta Arbolino</strong>
+                                <span class="team-member-role">Co-PI</span>
+                                <p class="bio-text">Associate Professor of Economic Policy. Expert in regional economics and policy evaluation.</p>
+                            </div>
+                        </div>
+                        <div class="team-member-card">
+                            <img src="images/team/lopes.jpg" alt="Prof. Antonio Lopes" class="team-member-photo">
+                            <div class="team-member-info">
+                                <strong>Prof. Antonio Lopes</strong>
+                                <p class="bio-text">Full Professor of Political Economy. Active in SVIMEZ scientific activities.</p>
+                            </div>
+                        </div>
+                        <!-- Riga 2 -->
+                        <div class="team-member-card">
+                            <img src="images/team/desimone.jpg" alt="Dr. Luisa De Simone" class="team-member-photo">
+                            <div class="team-member-info">
+                                <strong>Dr. Luisa De Simone</strong>
+                                <p class="bio-text">Researcher in Economic Policy. Expert in sustainable development analysis.</p>
+                            </div>
+                        </div>
+                        <div class="team-member-card">
+                            <img src="images/team/russo.jpg" alt="Dr. Ilaria Russo" class="team-member-photo">
+                            <div class="team-member-info">
+                                <strong>Dr. Ilaria Russo</strong>
+                                <span class="team-member-role">Research Fellow</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Advisory Board Section -->
+    <section class="section" id="advisory">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-badge">Scientific Support</span>
+                <h2 class="section-title">Advisory Board</h2>
+                <p class="section-subtitle">
+                    International expertise supporting the project's methodological and scientific development
+                </p>
+            </div>
+            
+            <div class="advisory-container">
+                <div class="advisory-card">
+                    <div class="advisory-image">
+                        <img src="images/team/szopik.jpg" alt="Prof. Katarzyna Szopik-Depczyńska">
+                    </div>
+                    <div class="advisory-content">
+                        <h3>Prof. Katarzyna Szopik-Depczyńska</h3>
+                        <span class="advisory-affiliation">University of Szczecin, Poland</span>
+                        <span class="advisory-role">Scientific Advisor</span>
+                        <p class="advisory-bio">
+                            Professor Szopik-Depczyńska has played a fundamental role across the various phases of 
+                            the H-SMA-CE project, providing invaluable expertise in circular economy measurement 
+                            and sustainable development assessment. Her extensive research on circularity indicators 
+                            and green transformation has significantly contributed to the project's methodological 
+                            framework and scientific rigor.
+                        </p>
+                        <p class="advisory-bio">
+                            Co-author of key publications including "A systematic review for measuring circular economy: 
+                            The 61 indicators" and "Enabling the Circular Economy transition: a sustainable lean 
+                            manufacturing recipe for Industry 4.0", her collaboration has strengthened the theoretical 
+                            foundations and practical applicability of the DSS tool.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Latest Outputs Section -->
+    <section class="section section-light" id="outputs">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-badge">Research Outputs</span>
+                <h2 class="section-title">Latest Publications</h2>
+                <p class="section-subtitle">
+                    Discover our recent scientific contributions and conference presentations
+                </p>
+            </div>
+            
+            <div class="cards-grid">
+                <article class="card publication-card">
+                    <div class="card-body">
+                        <span class="card-tag">Journal Article</span>
+                        <h3 class="card-title">
+                            <a href="#">Unveiling Taurasi's Hidden Potential: A Wine Culture-Centered Framework for Sustainable Development</a>
+                        </h3>
+                        <p class="publication-authors">
+                            Ciliberto, C., Calabrò, G., Caristi, G., Arbolino, R., & Ioppolo, G.
+                        </p>
+                        <p class="publication-venue">Sustainability, 17(13), 5704 • 2025</p>
+                        <div class="publication-links">
+                            <a href="https://doi.org/10.3390/su17135704" class="publication-link doi" target="_blank">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+                                    <polyline points="15 3 21 3 21 9"/>
+                                    <line x1="10" y1="14" x2="21" y2="3"/>
+                                </svg>
+                                DOI
+                            </a>
+                        </div>
+                    </div>
+                </article>
+                
+                <article class="card publication-card">
+                    <div class="card-body">
+                        <span class="card-tag">Conference Paper</span>
+                        <h3 class="card-title">
+                            <a href="#">Smart Transition in Historical Small Towns: Digital Material Flow Assessment in Taurasi</a>
+                        </h3>
+                        <p class="publication-authors">
+                            Ciliberto, C., Calabrò, G., Caristi, G., & Ioppolo, G.
+                        </p>
+                        <p class="publication-venue">Research and Innovation Forum 2025 • April 2025</p>
+                        <div class="publication-links">
+                            <span class="publication-link pdf">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="12" cy="12" r="10"/>
+                                    <polyline points="12 6 12 12 16 14"/>
+                                </svg>
+                                In Press
+                            </span>
+                        </div>
+                    </div>
+                </article>
+                
+                <article class="card publication-card">
+                    <div class="card-body">
+                        <span class="card-tag">Conference Paper</span>
+                        <h3 class="card-title">
+                            <a href="#">Analysing Italian Historical Small Towns: A Cultural and Geographic Mosaic of Identity</a>
+                        </h3>
+                        <p class="publication-authors">
+                            Ciliberto, C., Ioppolo, G., Caristi, G., & Calabrò, G.
+                        </p>
+                        <p class="publication-venue">FEMIB 2025, Porto • April 2025</p>
+                        <div class="publication-links">
+                            <a href="https://doi.org/10.5220/0013426600003956" class="publication-link doi" target="_blank">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+                                    <polyline points="15 3 21 3 21 9"/>
+                                    <line x1="10" y1="14" x2="21" y2="3"/>
+                                </svg>
+                                DOI
+                            </a>
+                        </div>
+                    </div>
+                </article>
+            </div>
+            
+            <div class="text-center mt-8">
+                <a href="publications.html" class="btn btn-secondary">
+                    View All Publications
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M5 12h14M12 5l7 7-7 7"/>
+                    </svg>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer" id="contact">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <div class="logo-text">H-SMA-CE</div>
+                    <p>
+                        A Decision Support System for Circular Economy Transition in Historical Small Towns. 
+                        Research project funded by the Italian Ministry of University and Research under PRIN 2022.
+                    </p>
+                    <div class="footer-funding">
+                        <div class="footer-funding-text">
+                            <strong>Project ID:</strong> 2022JZLL7J<br>
+                            <strong>CUP (Messina):</strong> J53D23009390006<br>
+                            <strong>CUP (Orientale):</strong> C53D23004860006<br>
+                            <strong>Funded by:</strong> MUR - PRIN 2022
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="footer-col">
+                    <h4 class="footer-title">Navigation</h4>
+                    <div class="footer-links">
+                        <a href="index.html">Home</a>
+                        <a href="#project">The Project</a>
+                        <a href="#taurasi">Case Study</a>
+                        <a href="#team">Research Team</a>
+                    </div>
+                </div>
+                
+                <div class="footer-col">
+                    <h4 class="footer-title">Dissemination</h4>
+                    <div class="footer-links">
+                        <a href="publications.html">Publications</a>
+                        <a href="conferences.html">Conferences</a>
+                        <a href="events.html">Events & Missions</a>
+                        <a href="dss.html">DSS Demo</a>
+                    </div>
+                </div>
+                
+                <div class="footer-col">
+                    <h4 class="footer-title">Contact</h4>
+                    <div class="footer-links">
+                        <a href="/cdn-cgi/l/email-protection#45222c3036203535206b2c2a35352a292a05302b2c28206b2c31"><span class="__cf_email__" data-cfemail="b7d0dec2c4d2c7c7d299ded8c7c7d8dbd8f7c2d9dedad299dec3">[email&#160;protected]</span></a>
+                        <a href="https://www.unime.it" target="_blank">University of Messina</a>
+                        <a href="https://www.unior.it" target="_blank">University of Naples L'Orientale</a>
+                    </div>
+                </div>
+            </div>
+            
+             <div class="footer-legal">
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Credits</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+</body>
 </html>
+        
